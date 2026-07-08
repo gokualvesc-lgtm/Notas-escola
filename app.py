@@ -335,5 +335,5 @@ def login_submited():
             return render_template("admin.html", username=session["username"], notas=notas, usuarios=usuarios)
         return render_template("entrada.html", username=session["username"], notas=notas)
     return render_template("login.html", message="Email ou senha incorretos!")
-    
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
