@@ -1,4 +1,4 @@
-import sqlite3, os
+import sqlite3, os, random
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, session
 
@@ -110,9 +110,41 @@ def cadastrar_submited():
         conn.close()
         return render_template("cadastrar.html", message="Email já cadastrado!")
     cursor.execute("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)", (name, email, password))
+    cursor.execute("SELECT nome FROM usuarios")
+    usuarios = cursor.fetchall()
+    cursor.execute("DELETE FROM notas")
+    cursor.execute("DELETE FROM sqlite_sequence WHERE name='notas'")
+    
+    for usuario in usuarios:
+        nome = usuario[0]
+    
+        matematica = str(round(random.uniform(0, 10), 1))
+        ciencias = str(round(random.uniform(0, 10), 1))
+        portugues = str(round(random.uniform(0, 10), 1))
+        artes = str(round(random.uniform(0, 10), 1))
+        geografia = str(round(random.uniform(0, 10), 1))
+    
+        cursor.execute("""
+            INSERT INTO notas (
+                nome,
+                matematica,
+                ciencias,
+                portugues,
+                artes,
+                geografia
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            nome,
+            matematica,
+            ciencias,
+            portugues,
+            artes,
+            geografia
+        ))
     conn.commit()
     conn.close()
-
+    
     return render_template("login.html", message="Usuário cadastrado com sucesso!")
 
 @app.route("/login")
